@@ -1,0 +1,15 @@
+[remap]
+
+importer="font_data_image"
+type="FontFile"
+uid="uid://d118sfvkyd74a"
+path="res://.godot/imported/FontUpdate.png-31cc7a08b0a873e7356301a4da7e6e38.fontdata"
+
+[deps]
+
+source_file="res://Graphics/Fonts/FontUpdate.png"
+dest_files=PackedStringArray("res://.godot/imported/FontUpdate.png-31cc7a08b0a873e7356301a4da7e6e38.fontdata")
+
+[params]
+
+dummy_value_ignore_me=0

@@ -1,0 +1,116 @@
+[gd_scene load_steps=9 format=3 uid="uid://dx7trrth1tycm"]
+
+[ext_resource type="Texture2D" uid="uid://bxkpvj068nnuf" path="res://Graphics/TouchScreen.png" id="1_1877u"]
+[ext_resource type="Script" path="res://Scripts/Puck.gd" id="2_3k2np"]
+
+[sub_resource type="Shader" id="Shader_yqgyx"]
+code = "shader_type canvas_item;
+
+uniform vec3 ogColor : source_color = vec3(0.094,0.161,0.031);
+
+uniform vec3 color : source_color;
+
+
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	if (distance(COLOR.rgb,ogColor) < 0.01)
+	{
+		COLOR.rgb = color;
+	}
+}
+
+"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cdu7h"]
+shader = SubResource("Shader_yqgyx")
+shader_parameter/ogColor = Color(0.0941176, 0.160784, 0.0313726, 1)
+shader_parameter/color = Color(0.0941176, 0.160784, 0.0313726, 1)
+
+[sub_resource type="Shader" id="1"]
+code = "shader_type canvas_item;
+
+uniform vec3 ogColor : source_color = vec3(0.094,0.161,0.031);
+
+uniform vec3 color : source_color;
+
+
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	if (distance(COLOR.rgb,ogColor) < 0.1)
+	{
+		COLOR.rgb = color;
+	}
+}
+
+"
+
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
+shader_parameter/ogColor = Color(0.870588, 1, 0.870588, 1)
+shader_parameter/color = Color(0.870588, 1, 0.870588, 1)
+
+[sub_resource type="Shader" id="3"]
+code = "shader_type canvas_item;
+
+uniform vec3 ogColor : source_color = vec3(0.094,0.161,0.031);
+
+uniform vec3 color : source_color;
+
+
+
+void vertex() {
+	// Called for every vertex the material is visible on.
+}
+
+void fragment() {
+	if (distance(COLOR.rgb,ogColor) < 0.01)
+	{
+		COLOR.rgb = color;
+	}
+}
+
+"
+
+[sub_resource type="ShaderMaterial" id="4"]
+shader = SubResource("3")
+shader_parameter/ogColor = Color(0.352941, 0.678431, 0.0627451, 1)
+shader_parameter/color = Color(0.352941, 0.678431, 0.0627451, 1)
+
+[node name="Puck" type="Sprite2D"]
+process_mode = 3
+texture_filter = 1
+material = SubResource("ShaderMaterial_cdu7h")
+position = Vector2(88, 115)
+texture = ExtResource("1_1877u")
+hframes = 7
+vframes = 2
+script = ExtResource("2_3k2np")
+quickTapLength = 8
+minSpeed = 5.0
+metadata/_edit_horizontal_guides_ = [392.0]
+
+[node name="Eyes" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("2")
+position = Vector2(0, -36)
+texture = ExtResource("1_1877u")
+hframes = 7
+vframes = 2
+frame = 9
+
+[node name="Face" type="Sprite2D" parent="."]
+z_index = 2
+texture_filter = 1
+material = SubResource("4")
+texture = ExtResource("1_1877u")
+hframes = 7
+vframes = 2
+frame = 8

@@ -1,0 +1,170 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Texture2D" uid="uid://dh8q4roy1bfv4" path="res://Graphics/Sprites/TextboxYou/Small.png" id="1"]
+[ext_resource type="FontFile" uid="uid://d118sfvkyd74a" path="res://Graphics/Fonts/FontUpdate.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bkl11bri0r27f" path="res://Graphics/Sprites/TextboxYou/Medium.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://ddgebqdt6vcuo" path="res://Graphics/Sprites/TextboxYou/Large.png" id="4"]
+[ext_resource type="AudioStream" uid="uid://blsfg2g87728s" path="res://Audio/SFX/CountIn/textAdvanceStart.ogg" id="5"]
+[ext_resource type="AudioStream" uid="uid://bkdn45x1lo4wj" path="res://Audio/SFX/CountIn/textAdvanceEnd.ogg" id="6"]
+
+[sub_resource type="GDScript" id="1"]
+resource_name = "Textbox"
+script/source = "extends Node2D
+
+@export var TextDoTo : Array[String]
+@export var SizeToDo : Array[int]
+
+@export var Enable : Array[bool]
+
+@export var TextNotSkippable : Array[bool]
+
+var indx : int = 0
+
+var textOn : bool = true
+
+var canSkip : bool = false
+
+var initDelay : bool = false
+
+signal Enabled(enabled)
+
+
+
+
+func _ready():
+	_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
+	indx += 1
+
+func _physics_process(delta):
+	if Input.is_action_just_pressed(\"Click\") and textOn == true and initDelay == false and TextNotSkippable[indx] == false:
+		$Start.play()
+		canSkip = false
+		$Delay.start()
+		
+	
+	if Input.is_action_just_released(\"Click\") and indx < TextDoTo.size() and textOn == true and canSkip == true and initDelay == false and TextNotSkippable[indx] == false:
+		_text(TextDoTo[indx],SizeToDo[indx],Enable[indx])
+		indx += 1
+		$Stop.play()
+
+
+
+
+func _text(text,size,enabled):
+	initDelay = true
+	
+	if !indx == 0:
+		hide()
+	$InitDelay.start()
+	$Small.hide()
+	$Medium.hide()
+	$Large.hide()
+	
+	if size == 0:
+		$Small.show()
+		$Small/Label.text = text
+	elif size == 1:
+		$Medium.show()
+		$Medium/Label.text = text
+	elif size == 2:
+		$Large.show()
+		$Large/Label.text = text
+	
+	emit_signal(\"Enabled\",enabled)
+	
+	if enabled == true:
+		textOn = false
+	if enabled == false:
+		textOn = true
+	
+
+
+func _on_delay_timeout():
+	canSkip = true
+
+
+func _on_init_delay_timeout():
+	initDelay = false
+	show()
+"
+
+[sub_resource type="FontVariation" id="2"]
+base_font = ExtResource("2")
+spacing_glyph = -6
+script = null
+
+[node name="Textbox" type="Node2D"]
+script = SubResource("1")
+TextDoTo = ["Press on your touch screen to continue.", "Welcome to <good game title>!", "Since this is your first time, we'll start simple.", "See that coin? Try pressing on it!", ""]
+SizeToDo = [0, 0, 0, 0, 4]
+Enable = [false, false, false, false, true]
+
+[node name="Small" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("1")
+
+[node name="Label" type="Label" parent="Small"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -20.0
+offset_right = 92.0
+offset_bottom = 20.0
+theme_override_fonts/font = SubResource("2")
+text = "It's always such a pleasure!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Medium" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("3")
+
+[node name="Label" type="Label" parent="Medium"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -28.0
+offset_right = 92.0
+offset_bottom = 28.0
+theme_override_fonts/font = SubResource("2")
+text = "You told me, dreams come true!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+
+[node name="Large" type="Sprite2D" parent="."]
+visible = false
+texture_filter = 1
+texture = ExtResource("4")
+
+[node name="Label" type="Label" parent="Large"]
+texture_filter = 1
+offset_left = -92.0
+offset_top = -48.0
+offset_right = 92.0
+offset_bottom = 48.0
+theme_override_fonts/font = SubResource("2")
+text = "You told me, dreams come true? Yeah yeah yeah! Yeah yeah yeah!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
+justification_flags = 162
+
+[node name="Start" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5")
+
+[node name="Stop" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6")
+
+[node name="Delay" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="InitDelay" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[connection signal="timeout" from="Delay" to="." method="_on_delay_timeout"]
+[connection signal="timeout" from="InitDelay" to="." method="_on_init_delay_timeout"]
+[connection signal="timeout" from="InitDelay" to="." method="_on_delay_timeout"]
